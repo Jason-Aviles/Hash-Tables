@@ -51,10 +51,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
 
+        if self.storage[index] is not None:
+            print("warning collision")
+            return
+        self.storage[index] = LinkedPair(key,value)
 
-
+        
     def remove(self, key):
         '''
         Remove the value stored with the given key.
@@ -63,7 +67,11 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        if self.storage[index]is None:
+            print("warning key notfound")
+            return 
+        self.storage[index] = None
 
 
     def retrieve(self, key):
@@ -74,7 +82,13 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        pair = self.storage[index]
+
+        if pair is None:
+             return None
+        else:
+             return  self.storage[index].value 
 
 
     def resize(self):
@@ -84,7 +98,15 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        self.capacity *=2
+        new_storage = [None] * self.capacity
+        for pair in self.storage:
+            if pair is not None:
+                new_index = self._hash_mod(pair.key)
+                new_storage[new_index] = pair
+        self.storage = new_storage
+
+                
 
 
 
@@ -101,13 +123,14 @@ if __name__ == "__main__":
     print(ht.retrieve("line_1"))
     print(ht.retrieve("line_2"))
     print(ht.retrieve("line_3"))
-
+    ht.remove("line_3")
+    ht.remove("waffles")
     # Test resizing
     old_capacity = len(ht.storage)
     ht.resize()
     new_capacity = len(ht.storage)
 
-    print(f"\nResized from {old_capacity} to {new_capacity}.\n")
+    # print(f"\nResized from {old_capacity} to {new_capacity}.\n")
 
     # Test if data intact after resizing
     print(ht.retrieve("line_1"))
